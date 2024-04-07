@@ -11,7 +11,7 @@ async fn main() -> std::io::Result<()> {
 		.parse()
 		.expect("Port must be a positive integer");
 
-	return HttpServer::new(|| {
+	return HttpServer::new(move || {
 		return App::new();
 	})
 	.bind((host, port))?
