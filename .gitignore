@@ -1,5 +1,7 @@
 /target
+/migrations
 
 
 Cargo.lock
 .env*
+!.env.example
