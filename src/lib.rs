@@ -1,19 +1,21 @@
+mod schema;
+
 use actix_web::web;
-use sqlx::PgPool;
+use diesel::{
+	r2d2::{ConnectionManager, Pool},
+	PgConnection,
+};
 
 #[derive(Clone)]
 pub struct AppState {
-	pub db_pool: PgPool,
+	db_pool: Pool<ConnectionManager<PgConnection>>,
 }
 impl AppState {
-	pub fn new(db_pool: PgPool) -> Self {
+	pub fn new(db_pool: Pool<ConnectionManager<PgConnection>>) -> Self {
 		return Self { db_pool };
 	}
 }
 
-pub fn env_error(var_name: &str) -> String {
-	return format!("Set up {var_name} variable in .env file");
-}
 
 pub fn app_config(cfg: &mut web::ServiceConfig) {
 	// cfg.configure(f)
