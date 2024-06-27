@@ -43,6 +43,36 @@ diesel::table! {
 }
 
 diesel::table! {
+    chapters (id) {
+        id -> Uuid,
+        volume_id -> Uuid,
+        number -> Float8,
+        craeted -> Timestamp,
+        altered -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
+    comments (id) {
+        id -> Uuid,
+        user_id -> Uuid,
+        page_id -> Uuid,
+        content -> Text,
+        created -> Timestamp,
+        altered -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
+    pages (id) {
+        id -> Uuid,
+        chapter_id -> Uuid,
+        number -> Int4,
+        picture_path -> Text,
+    }
+}
+
+diesel::table! {
     profiles (id) {
         id -> Uuid,
         user_id -> Nullable<Uuid>,
@@ -56,12 +86,36 @@ diesel::table! {
 }
 
 diesel::table! {
+    respects (id) {
+        id -> Uuid,
+        profile_id -> Uuid,
+        comment_id -> Nullable<Uuid>,
+        review_id -> Nullable<Uuid>,
+        isPositive -> Bool,
+        created -> Timestamp,
+        altered -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
+    reviews (id) {
+        id -> Uuid,
+        profile_id -> Uuid,
+        title_id -> Uuid,
+        content -> Text,
+        created -> Timestamp,
+        altered -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
     sessions (id) {
         id -> Uuid,
         user_id -> Uuid,
         ip -> Text,
         created -> Timestamp,
         altered -> Nullable<Timestamp>,
+        device -> Text,
     }
 }
 
@@ -128,24 +182,50 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    volumes (id) {
+        id -> Uuid,
+        title_id -> Uuid,
+        number -> Float8,
+        craeted -> Timestamp,
+        altered -> Nullable<Timestamp>,
+    }
+}
+
+diesel::joinable!(chapters -> volumes (volume_id));
+diesel::joinable!(comments -> pages (page_id));
+diesel::joinable!(comments -> profiles (user_id));
+diesel::joinable!(pages -> chapters (chapter_id));
 diesel::joinable!(profiles -> admins (admin_id));
 diesel::joinable!(profiles -> translators (translator_id));
 diesel::joinable!(profiles -> users (user_id));
+diesel::joinable!(respects -> comments (comment_id));
+diesel::joinable!(respects -> profiles (profile_id));
+diesel::joinable!(respects -> reviews (review_id));
+diesel::joinable!(reviews -> profiles (profile_id));
+diesel::joinable!(reviews -> titles (title_id));
 diesel::joinable!(sessions -> users (user_id));
 diesel::joinable!(titles -> artists (artist_id));
 diesel::joinable!(titles -> authors (author_id));
 diesel::joinable!(titles_teams -> teams (team_id));
 diesel::joinable!(titles_teams -> titles (title_id));
+diesel::joinable!(volumes -> titles (title_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     admins,
     artists,
     authors,
+    chapters,
+    comments,
+    pages,
     profiles,
+    respects,
+    reviews,
     sessions,
     teams,
     titles,
     titles_teams,
     translators,
     users,
+    volumes,
 );
