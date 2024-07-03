@@ -7,7 +7,7 @@ use diesel::{
 	PgConnection,
 };
 use log::info;
-use nedolib_backend::AppState;
+use neolib_backend::AppState;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -28,11 +28,11 @@ async fn main() -> std::io::Result<()> {
 	let db_pool: Pool<ConnectionManager<PgConnection>> = database::pool(&database_url);
 
 
+	let appState: AppState = AppState::new(db_pool);
+
 	info!("Listening on address: {}:{}", host, port);
 	return HttpServer::new(move || {
-		return App::new()
-			.app_data(web::Data::new(AppState::new(db_pool.clone())))
-			.configure(nedolib_backend::app_config);
+		return App::new().configure(|cfg| neolib_backend::app_config(cfg, &appState));
 	})
 	.bind((host, port))?
 	.run()

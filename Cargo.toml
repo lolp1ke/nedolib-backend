@@ -1,5 +1,5 @@
 [package]
-name = "nedolib-backend"
+name = "neolib-backend"
 version = "0.1.0"
 edition = "2021"
 
